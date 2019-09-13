@@ -77,12 +77,6 @@ export class Expanse extends Component {
     this.setState({ transaction: null, category: null });
   };
 
-  handleKeyPress = event => {
-    if (event.key === "Enter") {
-      this.handleEnter();
-    }
-  };
-
   render() {
     const { transaction, category } = this.state;
     return (

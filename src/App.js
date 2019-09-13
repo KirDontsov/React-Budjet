@@ -71,7 +71,7 @@ const Link = styled.span`
 `;
 
 const Table = styled.table`
-  width: 450px;
+  width: 600px;
   text-align: right;
   padding-top: 30px;
   margin: 0 auto;
@@ -110,16 +110,20 @@ class App extends Component {
     });
   };
 
-  handleDelItem = () => {
-    const inStorage = localStorage.removeItem("state");
-    console.log(inStorage);
-    // let i;
-    // for (i = 0; i < localStorage.length; i++) {
-    //   let inStorage = localStorage.key(i);
-    //   if (inStorage.slice(0, 6) === "myWord") {
-    //     console.log(inStorage);
-    //   }
-    // }
+  handleDelItem = index => {
+    let storageState = localStorage.getItem("state");
+    let initState;
+
+    if (storageState != null) {
+      storageState = JSON.parse(storageState);
+      initState = { ...storageState, date: moment(storageState.date) };
+    } else {
+      return null;
+    }
+
+    initState.transactions.splice(index, 1);
+    console.log(initState);
+    // this.setState(()=>)
   };
 
   handleNavClick = event => {
@@ -188,16 +192,6 @@ class App extends Component {
     return incomeBeforeToday + expanseBeforeToday;
   };
 
-  handleKeyPress = event => {
-    if (event.key === "Enter") {
-      const { onSubmit } = this.props;
-      const { transaction, category } = this.state;
-
-      onSubmit(-1 * Math.abs(parseFloat(transaction)), category);
-      this.setState({ transaction: null, category: null });
-    }
-  };
-
   render() {
     const { date, navSelected, transactions } = this.state;
 
@@ -245,6 +239,11 @@ class App extends Component {
                     <td>{date}</td>
                     <td>{sum} руб.</td>
                     <td>{category}</td>
+                    <td>
+                      <DateButton onClick={() => this.handleDelItem(index)}>
+                        &times;
+                      </DateButton>
+                    </td>
                   </tr>
                 ))}
             </tbody>
