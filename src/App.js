@@ -46,13 +46,21 @@ const Link = styled.span`
   border-bottom: ${({ selected }) => (selected ? "2px solid white" : "none")};
 `;
 
+const Table = styled.table`
+  width: 450px;
+  text-align: right;
+  padding-top: 30px;
+  margin: 0 auto;
+`;
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       date: moment(),
-      navSelected: "expanse"
+      navSelected: "expanse",
+      transactions: []
     };
   }
 
@@ -74,8 +82,29 @@ class App extends Component {
     });
   };
 
+  handleSubmitTransaction = (sum, category) => {
+    const { date: TodayDate, transactions } = this.state;
+
+    const newTransaction = {
+      date: TodayDate.format("DD.MM.YYYY"),
+      category,
+      sum
+    };
+
+    const newTransactions = [...transactions, newTransaction];
+
+    newTransactions.sort((a, b) => {
+      const aDate = moment(a.date, "DD.MM.YYYY");
+      const bDate = moment(b.date, "DD.MM.YYYY");
+      return aDate.isAfter(bDate);
+    });
+
+    console.log(newTransactions);
+    this.setState({ transactions: newTransactions });
+  };
+
   render() {
-    const { date, navSelected } = this.state;
+    const { date, navSelected, transactions } = this.state;
 
     return (
       <section className="App">
@@ -102,7 +131,27 @@ class App extends Component {
               Доходы
             </Link>
           </Nav>
-          {navSelected === "expanse" ? <Expanse /> : <Incomes />}
+          {navSelected === "expanse" ? (
+            <Expanse onSubmit={this.handleSubmitTransaction} />
+          ) : (
+            <Incomes onSubmit={this.handleSubmitTransaction} />
+          )}
+
+          <Table>
+            <tbody>
+              {transactions
+                .filter(({ date: transactionDate }) =>
+                  moment(transactionDate, "DD.MM.YYYY").isSame(date, "month")
+                )
+                .map(({ date, sum, category }, index) => (
+                  <tr key={index}>
+                    <td>{date}</td>
+                    <td>{sum} ₽</td>
+                    <td>{category}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
         </header>
       </section>
     );
