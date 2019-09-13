@@ -36,14 +36,17 @@ const LineInput = styled.dd`
   margin: 0;
 `;
 const Button = styled.button`
+  width: 150px;
+  height: 50px;
   color: white;
-  border: 1px solid white;
+  border: 2px solid white;
   border-radius: 31px;
   background-color: transparent;
   margin: 3px;
   cursor: pointer;
   text-align: center;
   padding: 5px 20px;
+  font-size: 25px;
 
   &:focus,
   &:active {
@@ -72,6 +75,12 @@ export class Expanse extends Component {
 
     onSubmit(-1 * Math.abs(parseFloat(transaction)), category);
     this.setState({ transaction: null, category: null });
+  };
+
+  handleKeyPress = event => {
+    if (event.key === "Enter") {
+      this.handleEnter();
+    }
   };
 
   render() {
