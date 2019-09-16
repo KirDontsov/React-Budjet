@@ -122,8 +122,11 @@ class App extends Component {
     }
 
     initState.transactions.splice(index, 1);
-    console.log(initState);
-    // this.setState(()=>)
+
+    this.setState(prevState => {
+      prevState.transactions.splice(index, 1);
+      return { transactions: prevState.transactions };
+    });
   };
 
   handleNavClick = event => {
@@ -198,7 +201,6 @@ class App extends Component {
     return (
       <section className="App">
         <header className="App-header">
-          <DelButton onClick={this.handleDelItem}>Очистить</DelButton>
           <img src={logo} className="App-logo" alt="logo" />
           <p>{date.format("DD.MM.YYYY")}</p>
           <DateLine>
